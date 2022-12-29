@@ -6,7 +6,7 @@
 
         <div class="flex justify-between">
             <div class="boundingbox" id="boundingbox">
-                <div id="box1" ref="box">
+                <div id="box1" ref="box" @click="createTask()">
                     <div
                         v-for="item in points"
                         :key="item.id"
@@ -205,10 +205,10 @@ const box = ref(null);
 const { data: points } = await useFetch('http://localhost:5000/', {
     method: 'get',
 });
-const updatePosition = async ({ id, x, y, title }) => {
+const updatePosition = async ({ id, x, y, title, date }) => {
     await useFetch('http://localhost:5000/', {
         method: 'put',
-        body: { id: id, x: x, y: y, titel: title },
+        body: { id: id, x: x, y: y, titel: title, date: date },
     });
     console.log(x, y, id);
 };
@@ -229,6 +229,10 @@ onMounted(() => {
     const gridWidth = 50;
     const gridRows = container.getBoundingClientRect().height / gridHeight;
     const gridColumns = Math.floor(container.clientWidth / gridWidth);
+
+    const createTask = () => {
+        console.log('you clicked');
+    };
 
     document.getElementById('box1').addEventListener('click', function (event) {
         const l1 = document.getElementById('lbl1');
@@ -323,7 +327,7 @@ onMounted(() => {
                     title: point.titel,
                 });
             },
-            onClick: function createModal() {
+            onClick: function createModal(end) {
                 // Create modal element
                 const modal = document.createElement('div');
                 modal.classList.add('modal');
@@ -359,10 +363,11 @@ onMounted(() => {
 
                 // Create due date input
                 const dueDateInput = document.createElement('input');
-                dueDateInput.type = 'text';
+                dueDateInput.type = 'date';
                 dueDateInput.name = 'duedate';
                 dueDateInput.id = 'duedate';
-                dueDateInput.value = point.id;
+
+                dueDateInput.value = point.date.split('T')[0];
 
                 const sendButton = document.createElement('input');
                 sendButton.type = 'button';
@@ -376,6 +381,16 @@ onMounted(() => {
                 modal.appendChild(modalContent);
 
                 document.body.appendChild(modal);
+                sendButton.addEventListener('click', () => {
+                    modal.remove();
+                    updatePosition({
+                        id: point.id,
+                        x: end.x,
+                        y: end.y,
+                        title: titleInput.value,
+                        date: dueDateInput.value,
+                    });
+                });
                 modal.addEventListener('click', (event) => {
                     if (event.target === modal) {
                         modal.remove();
