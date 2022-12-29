@@ -3,9 +3,7 @@
         <!--     <section id="maintasks">
     test
         </section> -->
-        <button class="button" @click="modalClick = !modalClick">ree</button>
 
-        <h2 v-show="modalClick">test</h2>
         <div class="flex justify-between">
             <div class="boundingbox" id="boundingbox">
                 <div id="box1" ref="box">
@@ -18,24 +16,64 @@
                     ></div>
                 </div>
             </div>
-            <div class="pl-8 grow">
-                <div class="border p-2">
-                    <h2 class="font-sans font-bold text-4xl">DO IT</h2>
-                    <div v-for="item in points" :key="item.id">
-                        {{ item.titel }}
+            <div class="flex flex-col pl-8">
+                <div class="">
+                    <div class="border p-2">
+                        <h2 class="font-sans font-bold text-4xl">DO IT</h2>
+                        <div v-for="item in points" :key="item.id">
+                            {{ item.titel }}
+                        </div>
+                    </div>
+                    <div class="border p-2">
+                        <h2 class="font-sans font-bold text-4xl">
+                            SCHEDULE IT
+                        </h2>
+                        <div v-for="item in points" :key="item.id">
+                            {{ item.titel }}
+                        </div>
+                    </div>
+                    <div class="border p-2">
+                        <h2>DELEGATE IT</h2>
+                        <div v-for="item in points" :key="item.id">
+                            {{ item.titel }}
+                        </div>
                     </div>
                 </div>
-                <div class="border p-2">
-                    <h2 class="font-sans font-bold text-4xl">SCHEDULE IT</h2>
-                    <div v-for="item in points" :key="item.id">
-                        {{ item.titel }}
-                    </div>
-                </div>
-                <div class="border p-2">
-                    <h2>DELEGATE IT</h2>
-                    <div v-for="item in points" :key="item.id">
-                        {{ item.titel }}
-                    </div>
+                <div class="outline">
+                    <form>
+                        <div class="mb-6">
+                            <label
+                                for="title"
+                                class="block mb-2 text-sm font-medium text-gray-900"
+                                >Task name</label
+                            >
+                            <input
+                                type="text"
+                                id="title"
+                                class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                placeholder="Title"
+                            />
+                        </div>
+                        <div class="mb-6">
+                            <label
+                                for="duedate"
+                                class="block mb-2 text-sm font-medium text-gray-900"
+                                >Due Date</label
+                            >
+                            <input
+                                type="date"
+                                id="duedate"
+                                class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >
+                            Submit
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -48,6 +86,12 @@
     position: absolute;
 }
 
+.box input {
+    @apply block w-auto mx-2 left-full relative px-3 py-1.5 text-base font-normal text-gray-700 bg-white  border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+}
+
+.inputs {
+}
 .button {
     @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
 }
@@ -83,7 +127,8 @@
 
 .boundingbox {
     height: 700px;
-    @apply mr-auto border w-2/3 relative;
+    width: 1000px;
+    @apply mr-auto border  relative;
 }
 
 #clickme {
@@ -130,6 +175,24 @@
     height: 76px;
     line-height: 76px;
 }
+.modal-content {
+    display: flex;
+    flex-direction: column;
+}
+.modal-content input {
+    @apply block w-auto relative my-2 px-3 py-1.5 text-base font-normal
+        text-gray-700 border border-solid border-gray-500 rounded;
+    left: 0;
+}
+.modal-content button {
+    @apply block w-auto relative my-2 px-3 py-1.5 text-base font-normal
+        text-gray-700 border border-solid border-gray-500 rounded;
+    left: 0;
+}
+
+h4 {
+    @apply text-3xl font-bold font-sans mb-2;
+}
 </style>
 
 <script setup>
@@ -142,19 +205,19 @@ const box = ref(null);
 const { data: points } = await useFetch('http://localhost:5000/', {
     method: 'get',
 });
-const updatePosition = async ({ id, x, y }) => {
+const updatePosition = async ({ id, x, y, title }) => {
     await useFetch('http://localhost:5000/', {
         method: 'put',
-        body: { id: id, x: x, y: y },
+        body: { id: id, x: x, y: y, titel: title },
     });
     console.log(x, y, id);
 };
 
-const addPosition = async ({ x }) => {
-    await useFetch('http://localhost:5000/', {
+const addPosition = async ({ x, y }) => {
+    /*  await useFetch('http://localhost:5000/', {
         method: 'post',
-        body: { x: x },
-    });
+        body: { x: x, y: y },
+    }); */
     console.log(x);
 };
 
@@ -169,13 +232,15 @@ onMounted(() => {
 
     document.getElementById('box1').addEventListener('click', function (event) {
         const l1 = document.getElementById('lbl1');
-
         const b1 = document.createElement('div');
         const rect = event.target.getBoundingClientRect();
         const x = event.clientX - rect.left; //x position within the element.
         const y = event.clientY - rect.top; //y position within the element.
         const xPosition = Math.round(x / 50) * 50;
         const yPosition = Math.round(y / 50) * 50;
+        const inputs = document.createElement('input');
+        //const inputFields = b1.appendChild(inputs);
+
         document.getElementById('box1').appendChild(b1);
         b1.style.left = xPosition + 'px';
         b1.style.top = yPosition + 'px';
@@ -183,6 +248,7 @@ onMounted(() => {
         l1.innerHTML = 'Left? : ' + x + ' ; Top? : ' + Math.round(y) + '.';
 
         b1.className = 'bubble box';
+        // b1.appendChild = Form;
 
         const box1 = document.getElementById('box1');
 
@@ -190,7 +256,7 @@ onMounted(() => {
             type: 'x,y',
             edgeResistance: 0.865,
             bounds: box1,
-
+            force3D: false,
             liveSnap: true,
 
             snap: {
@@ -199,7 +265,7 @@ onMounted(() => {
             },
         });
 
-        addPosition({ x: x });
+        addPosition({ x: x, y: y });
 
         /*   const modal = document.createElement("div");
         b1.appendChild(modal)
@@ -247,8 +313,74 @@ onMounted(() => {
             y: point.Y,
             bounds: '#box1',
             liveSnap: true,
+
             onDragEnd: (end) => {
-                updatePosition({ id: point.id, x: end.x, y: end.y });
+                console.log(point.titel);
+                updatePosition({
+                    id: point.id,
+                    x: end.x,
+                    y: end.y,
+                    title: point.titel,
+                });
+            },
+            onClick: function createModal() {
+                // Create modal element
+                const modal = document.createElement('div');
+                modal.classList.add('modal');
+                modal.style.display = 'block';
+                modal.style.position = 'fixed';
+                modal.style.zIndex = '100';
+                modal.style.left = '0';
+                modal.style.top = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.overflow = 'auto';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.4)';
+
+                // Create modal content container
+                const modalContent = document.createElement('div');
+                modalContent.classList.add('modal-content');
+                modalContent.style.backgroundColor = '#e6e6e6';
+                modalContent.style.margin = '15% auto';
+                modalContent.style.padding = '2rem';
+                modalContent.style.border = '1px solid #888';
+                modalContent.style.display = 'flex';
+                modalContent.style.width = '33%';
+
+                const title = document.createElement('h4');
+                title.textContent = 'Edit task';
+
+                // Create title input
+                const titleInput = document.createElement('input');
+                titleInput.type = 'text';
+                titleInput.name = 'title';
+                titleInput.id = 'title';
+                titleInput.value = point.titel;
+
+                // Create due date input
+                const dueDateInput = document.createElement('input');
+                dueDateInput.type = 'text';
+                dueDateInput.name = 'duedate';
+                dueDateInput.id = 'duedate';
+                dueDateInput.value = point.id;
+
+                const sendButton = document.createElement('input');
+                sendButton.type = 'button';
+                sendButton.value = 'Send';
+
+                modalContent.appendChild(title);
+                modalContent.appendChild(titleInput);
+                modalContent.appendChild(dueDateInput);
+                modalContent.appendChild(sendButton);
+
+                modal.appendChild(modalContent);
+
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.remove();
+                    }
+                });
             },
             snap: {
                 x: (endValue) => Math.round(endValue / gridWidth) * gridWidth,
