@@ -6,13 +6,12 @@
 
         <div class="flex justify-between">
             <div class="boundingbox" id="boundingbox">
-                <div id="box1" ref="box" @click="createTask()">
+                <div id="box1" ref="box" @click.self="createTask">
                     <div
                         v-for="item in points"
                         :key="item.id"
                         :id="item.id"
-                        class="bubble box"
-                        :style="{ left: item.X + 'px', top: item.Y + 'px' }"
+                        class="point"
                     ></div>
                 </div>
             </div>
@@ -38,42 +37,6 @@
                             {{ item.titel }}
                         </div>
                     </div>
-                </div>
-                <div class="outline">
-                    <form>
-                        <div class="mb-6">
-                            <label
-                                for="title"
-                                class="block mb-2 text-sm font-medium text-gray-900"
-                                >Task name</label
-                            >
-                            <input
-                                type="text"
-                                id="title"
-                                class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                placeholder="Title"
-                            />
-                        </div>
-                        <div class="mb-6">
-                            <label
-                                for="duedate"
-                                class="block mb-2 text-sm font-medium text-gray-900"
-                                >Due Date</label
-                            >
-                            <input
-                                type="date"
-                                id="duedate"
-                                class="bg-gray-50 border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                        >
-                            Submit
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
@@ -137,12 +100,11 @@
     border: 1px solid black;
     cursor: pointer;
 }
-
-.bubble {
-    display: inline-block;
+.point {
     width: 25px;
     height: 25px;
-    background: orange;
+    background: rgb(237, 14, 14);
+    position: absolute;
     border-radius: 50%;
 }
 
@@ -157,16 +119,6 @@
     repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
     repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%);
   background-size: 5% 5%; */
-}
-
-.box {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background: rgb(237, 14, 14);
-
-    position: absolute;
-    top: 0;
 }
 
 .highlight {
@@ -188,6 +140,13 @@
     @apply block w-auto relative my-2 px-3 py-1.5 text-base font-normal
         text-gray-700 border border-solid border-gray-500 rounded;
     left: 0;
+}
+
+.point {
+    width: 25px;
+    height: 25px;
+    background: rgb(237, 14, 14);
+    position: absolute;
 }
 
 h4 {
@@ -214,11 +173,43 @@ const updatePosition = async ({ id, x, y, title, date }) => {
 };
 
 const addPosition = async ({ x, y }) => {
-    /*  await useFetch('http://localhost:5000/', {
+    await useFetch('http://localhost:5000/', {
         method: 'post',
         body: { x: x, y: y },
-    }); */
+    });
     console.log(x);
+};
+const createTask = (event) => {
+    const l1 = document.getElementById('lbl1');
+    const b1 = document.createElement('div');
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left; //x position within the element.
+    const y = event.clientY - rect.top; //y position within the element.
+    const xPosition = Math.round(x / 50) * 50;
+    const yPosition = Math.round(y / 50) * 50;
+    console.dir('works not' + event);
+
+    document.getElementById('box1').appendChild(b1);
+    b1.style.left = x + 'px';
+    b1.style.top = y + 'px';
+    b1.setAttribute('id', xPosition);
+    l1.innerHTML = 'Left? : ' + x + ' ; Top? : ' + Math.round(y) + '.';
+
+    b1.className = 'point';
+
+    const box1 = document.getElementById('box1');
+
+    Draggable.create(b1, console.log({ b1 }), {
+        bounds: '#box1',
+        force3D: false,
+        /* liveSnap: true,
+
+        snap: {
+            x: (endValue) => Math.round(endValue / gridWidth) * gridWidth,
+            y: (endValue) => Math.round(endValue / gridHeight) * gridHeight,
+        }, */
+    });
+    addPosition({ x: x, y: y });
 };
 
 onMounted(() => {
@@ -230,48 +221,9 @@ onMounted(() => {
     const gridRows = container.getBoundingClientRect().height / gridHeight;
     const gridColumns = Math.floor(container.clientWidth / gridWidth);
 
-    const createTask = () => {
-        console.log('you clicked');
-    };
-
-    document.getElementById('box1').addEventListener('click', function (event) {
-        const l1 = document.getElementById('lbl1');
-        const b1 = document.createElement('div');
-        const rect = event.target.getBoundingClientRect();
-        const x = event.clientX - rect.left; //x position within the element.
-        const y = event.clientY - rect.top; //y position within the element.
-        const xPosition = Math.round(x / 50) * 50;
-        const yPosition = Math.round(y / 50) * 50;
-        const inputs = document.createElement('input');
-        //const inputFields = b1.appendChild(inputs);
-
-        document.getElementById('box1').appendChild(b1);
-        b1.style.left = xPosition + 'px';
-        b1.style.top = yPosition + 'px';
-        b1.setAttribute('id', xPosition);
-        l1.innerHTML = 'Left? : ' + x + ' ; Top? : ' + Math.round(y) + '.';
-
-        b1.className = 'bubble box';
-        // b1.appendChild = Form;
-
-        const box1 = document.getElementById('box1');
-
-        Draggable.create(b1, console.log({ b1 }), {
-            type: 'x,y',
-            edgeResistance: 0.865,
-            bounds: box1,
-            force3D: false,
-            liveSnap: true,
-
-            snap: {
-                x: (endValue) => Math.round(endValue / gridWidth) * gridWidth,
-                y: (endValue) => Math.round(endValue / gridHeight) * gridHeight,
-            },
-        });
-
-        addPosition({ x: x, y: y });
-
-        /*   const modal = document.createElement("div");
+    /* document.getElementById('box1').addEventListener('click', function (event) {
+        //;
+           const modal = document.createElement("div");
         b1.appendChild(modal)
         //testArray.push(document.getElementById(xPosition))
         //console.log(testArray)
@@ -288,9 +240,9 @@ onMounted(() => {
         modalOverlay.classList.add("modal-overlay");
         modalOverlay.setAttribute('id', "Overlay")
         modal.classList.add("modal");
- */
+ 
         //document.getElementById("boundingbox").appendChild(modalOverlay);
-    });
+    });*/
 
     /*   for (i = 0; i < gridRows * gridColumns; i++) {
         y = Math.floor(i / gridColumns) * gridHeight;
@@ -310,23 +262,22 @@ onMounted(() => {
     points.value.forEach((point, index) => {
         console.dir(box.value.children);
         console.log(index);
+        const dateformat = point.date.split('T')[0];
+        gsap.set(box.value.children[index], { x: point.X, y: point.Y });
 
         Draggable.create(box.value.children[index], {
-            type: 'x,y',
-            x: point.X,
-            y: point.Y,
             bounds: '#box1',
             liveSnap: true,
-
-            onDragEnd: (end) => {
-                console.log(point.titel);
+            onDragEnd: function () {
                 updatePosition({
                     id: point.id,
-                    x: end.x,
-                    y: end.y,
+                    x: Math.round(this.endX),
+                    y: Math.round(this.endY),
                     title: point.titel,
+                    date: dateformat,
                 });
             },
+
             onClick: function createModal(end) {
                 // Create modal element
                 const modal = document.createElement('div');
