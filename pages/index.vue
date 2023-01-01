@@ -1,10 +1,17 @@
 <template>
+    <header class="px-28 py-4">
+        <h1>Dashboard</h1>
+    </header>
     <main class="ih-container px-28" id="ih-container">
         <!--     <section id="maintasks">
     test
         </section> -->
 
-        <div class="flex justify-between">
+        <section class="my-4">
+            <h2>Welcome back Simon</h2>
+        </section>
+
+        <div class="flex">
             <div class="boundingbox" id="boundingbox">
                 <div id="box1" ref="box" @click.self="createTask">
                     <div
@@ -15,26 +22,39 @@
                     ></div>
                 </div>
             </div>
-            <div class="flex flex-col pl-8">
+            <div class="flex flex-col grow pl-5">
                 <div class="">
-                    <div class="border p-2">
-                        <h2 class="font-sans font-bold text-4xl">DO IT</h2>
-                        <div v-for="item in points" :key="item.id">
-                            {{ item.titel }}
+                    <div class="listCategories">
+                        <h3 class="font-bold text-3xl py-3">DO IT</h3>
+                        <div
+                            v-for="item in points"
+                            :key="item.id"
+                            :id="item.id"
+                            class="py-2 font-thin font-sans"
+                        >
+                            <p class="font-light">{{ item.titel }}</p>
                         </div>
                     </div>
-                    <div class="border p-2">
-                        <h2 class="font-sans font-bold text-4xl">
-                            SCHEDULE IT
-                        </h2>
-                        <div v-for="item in points" :key="item.id">
-                            {{ item.titel }}
+                    <div class="listCategories">
+                        <h3 class="font-bold text-3xl py-3">SCHEDULE IT</h3>
+                        <div
+                            v-for="item in points"
+                            :key="item.id"
+                            :id="item.id"
+                            class="py-2 font-thin font-sans"
+                        >
+                            <p class="font-light">{{ item.titel }}</p>
                         </div>
                     </div>
-                    <div class="border p-2">
-                        <h2>DELEGATE IT</h2>
-                        <div v-for="item in points" :key="item.id">
-                            {{ item.titel }}
+                    <div class="listCategories">
+                        <h3 class="font-bold text-3xl py-3">DELETE IT</h3>
+                        <div
+                            v-for="item in points"
+                            :key="item.id"
+                            :id="item.id"
+                            class="py-2 font-thin font-sans"
+                        >
+                            <p class="font-light">{{ item.titel }}</p>
                         </div>
                     </div>
                 </div>
@@ -91,7 +111,7 @@
 .boundingbox {
     height: 700px;
     width: 1000px;
-    @apply mr-auto border  relative;
+    @apply border  relative;
 }
 
 #clickme {
@@ -109,8 +129,8 @@
 }
 
 #box1 {
-    width: 100%;
-    height: 100%;
+    width: 1000px;
+    height: 800px;
     position: relative;
 
     /*  border: 1px solid #000;
@@ -152,6 +172,58 @@
 h4 {
     @apply text-3xl font-bold font-sans mb-2;
 }
+
+.modalButtons {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+    margin-top: 1.8rem;
+}
+
+.modalButtons input {
+    border: unset;
+    @apply px-6
+      py-2.5
+      
+      text-grey
+      font-medium
+      text-xs
+      leading-tight
+      uppercase
+      rounded
+      underline
+      underline-offset-4
+      hover:text-black
+      cursor-pointer	
+      focus:outline-none focus:ring-0
+      
+     
+      transition
+      duration-150
+      ease-in-out;
+}
+
+.modalButtons input:nth-child(2) {
+    background: rgb(46, 121, 12);
+    outline: unset;
+    border: unset;
+    @apply px-6
+      py-2.5
+      bg-green-600
+      text-white
+      font-medium
+      text-xs
+      leading-tight
+      uppercase
+      rounded
+      shadow-md
+      hover:bg-green-700 hover:shadow-lg
+      focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0
+      active:bg-green-800 active:shadow-lg
+      transition
+      duration-150
+      ease-in-out;
+}
 </style>
 
 <script setup>
@@ -164,6 +236,15 @@ const box = ref(null);
 const { data: points } = await useFetch('http://localhost:5000/', {
     method: 'get',
 });
+
+const deletePosition = async ({ id }) => {
+    await useFetch('http://localhost:5000/:id', {
+        method: 'delete',
+        body: { id: id },
+    });
+    console.log(id);
+};
+
 const updatePosition = async ({ id, x, y, title, date }) => {
     await useFetch('http://localhost:5000/', {
         method: 'put',
@@ -260,8 +341,8 @@ onMounted(() => {
     }  */
 
     points.value.forEach((point, index) => {
-        console.dir(box.value.children);
-        console.log(index);
+        /*   console.dir(box.value.children);
+        console.log(index); */
         const dateformat = point.date.split('T')[0];
         gsap.set(box.value.children[index], { x: point.X, y: point.Y });
 
@@ -320,27 +401,46 @@ onMounted(() => {
 
                 dueDateInput.value = point.date.split('T')[0];
 
+                const deleteButton = document.createElement('input');
+                deleteButton.type = 'button';
+                deleteButton.value = 'Delete';
+
                 const sendButton = document.createElement('input');
                 sendButton.type = 'button';
                 sendButton.value = 'Send';
 
+                const buttons = document.createElement('div');
+                buttons.classList.add('modalButtons');
+                buttons.appendChild(deleteButton);
+                buttons.appendChild(sendButton);
+
                 modalContent.appendChild(title);
                 modalContent.appendChild(titleInput);
                 modalContent.appendChild(dueDateInput);
-                modalContent.appendChild(sendButton);
+                modalContent.appendChild(buttons);
 
                 modal.appendChild(modalContent);
 
                 document.body.appendChild(modal);
+
+                deleteButton.addEventListener('click', () => {
+                    modal.remove();
+                    deletePosition({
+                        id: point.id,
+                    });
+                    window.location.reload();
+                });
+
                 sendButton.addEventListener('click', () => {
                     modal.remove();
                     updatePosition({
                         id: point.id,
-                        x: end.x,
-                        y: end.y,
+                        x: Math.round(this.endX),
+                        y: Math.round(this.endY),
                         title: titleInput.value,
-                        date: dueDateInput.value,
+                        date: dateformat,
                     });
+                    window.location.reload();
                 });
                 modal.addEventListener('click', (event) => {
                     if (event.target === modal) {

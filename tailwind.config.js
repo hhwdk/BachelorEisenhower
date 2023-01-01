@@ -16,6 +16,8 @@ module.exports = {
                 grey: '#868686',
                 lightgrey: '#F3F3F3',
                 lightblack: '#34312F',
+                themeBackground: 'var(--background)',
+                themeText: 'var(--text)',
             },
             fontFamily: {
                 sans: ['Poppins', 'sans-serif'],

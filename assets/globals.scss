@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&family=Passion+One&display=swap');
+
+* {
+}
+
+h1 {
+    @apply font-black text-5xl text-slate-900;
+}
+h2 {
+    font-family: 'Noto Sans';
+    @apply font-light text-slate-900 text-xl;
+}
+
+p {
+    font-family: 'Noto Sans';
+}
+
+body {
+    background: #f9faf5;
+}
+
+.theme-light {
+    --background: #f8f8f8;
+    --text: #313131;
+}
+.theme-dark {
+    --background: #313131;
+    --text: #f8f8f8;
+}
+
+.listCategories {
+    @apply bg-white rounded-lg p-2 my-4 shadow w-full;
+}
+
+.listCategories:nth-child(1) {
+    margin: unset;
+}
