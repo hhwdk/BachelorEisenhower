@@ -1,8 +1,8 @@
 <template>
-    <header class="px-28 py-4">
+    <header class="lg:px-40 py-4">
         <h1>Dashboard</h1>
     </header>
-    <main class="ih-container px-28" id="ih-container">
+    <main class="ih-container px-40" id="ih-container">
         <!--     <section id="maintasks">
     test
         </section> -->
@@ -11,7 +11,7 @@
             <h2>Welcome back Simon</h2>
         </section>
 
-        <div class="flex">
+        <div class="flex justify-between">
             <div class="boundingbox" id="boundingbox">
                 <div id="box1" ref="box" @click.self="createTask">
                     <div
@@ -22,10 +22,24 @@
                     ></div>
                 </div>
             </div>
-            <div class="flex flex-col grow pl-5">
+            <div class="flex flex-col w-1/3 grow">
                 <div class="">
                     <div class="listCategories">
-                        <h3 class="font-bold text-3xl py-3">DO IT</h3>
+                        <h3 class="font-bold text-3xl py-1 pb-4">DO IT</h3>
+                        <div
+                            v-for="item in points"
+                            :key="item.id"
+                            :id="item.id"
+                            class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
+                        >
+                            <p class="font-light">{{ item.titel }}</p>
+                            <p>
+                                {{ item.date }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="listCategories">
+                        <h3 class="font-bold text-xl py-3">SCHEDULE IT</h3>
                         <div
                             v-for="item in points"
                             :key="item.id"
@@ -36,18 +50,7 @@
                         </div>
                     </div>
                     <div class="listCategories">
-                        <h3 class="font-bold text-3xl py-3">SCHEDULE IT</h3>
-                        <div
-                            v-for="item in points"
-                            :key="item.id"
-                            :id="item.id"
-                            class="py-2 font-thin font-sans"
-                        >
-                            <p class="font-light">{{ item.titel }}</p>
-                        </div>
-                    </div>
-                    <div class="listCategories">
-                        <h3 class="font-bold text-3xl py-3">DELETE IT</h3>
+                        <h3 class="font-bold text-xl py-3">DELEGATE IT</h3>
                         <div
                             v-for="item in points"
                             :key="item.id"
@@ -70,7 +73,7 @@
 }
 
 .box input {
-    @apply block w-auto mx-2 left-full relative px-3 py-1.5 text-base font-normal text-gray-700 bg-white  border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+    @apply block w-auto mx-2 left-full relative px-3 py-1.5 text-base font-normal text-gray-700 bg-white    rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
 }
 
 .inputs {
@@ -109,9 +112,9 @@
 }
 
 .boundingbox {
-    height: 700px;
     width: 1000px;
-    @apply border  relative;
+    height: 700px;
+    @apply relative;
 }
 
 #clickme {
@@ -120,18 +123,21 @@
     border: 1px solid black;
     cursor: pointer;
 }
-.point {
-    width: 25px;
-    height: 25px;
-    background: rgb(237, 14, 14);
-    position: absolute;
-    border-radius: 50%;
-}
 
 #box1 {
-    width: 1000px;
-    height: 800px;
+    width: 975px;
+    height: 700px;
     position: relative;
+    background-size: 25px 25px, 90% 90%;
+    background-image: radial-gradient(
+            circle,
+            #bebebe 1px,
+            rgba(155, 155, 155, 0) 1px
+        ),
+        url(assets/bg.svg);
+    background-position: -12.5px -12.5px, center;
+    background-repeat: repeat, no-repeat;
+    @apply bg-white relative rounded-lg;
 
     /*  border: 1px solid #000;
   box-shadow: inset 0 0 100px #eee; */
@@ -165,8 +171,10 @@
 .point {
     width: 25px;
     height: 25px;
-    background: rgb(237, 14, 14);
+    background: #a8ffa8;
     position: absolute;
+    border-radius: 50%;
+    border: 1px solid #a8ffa8;
 }
 
 h4 {
@@ -184,7 +192,7 @@ h4 {
     border: unset;
     @apply px-6
       py-2.5
-      
+
       text-grey
       font-medium
       text-xs
@@ -194,10 +202,10 @@ h4 {
       underline
       underline-offset-4
       hover:text-black
-      cursor-pointer	
+      cursor-pointer
       focus:outline-none focus:ring-0
-      
-     
+
+
       transition
       duration-150
       ease-in-out;
@@ -297,8 +305,8 @@ onMounted(() => {
     gsap.registerPlugin(Draggable);
 
     const container = document.getElementById('box1');
-    const gridHeight = 50;
-    const gridWidth = 50;
+    const gridHeight = 25;
+    const gridWidth = 25;
     const gridRows = container.getBoundingClientRect().height / gridHeight;
     const gridColumns = Math.floor(container.clientWidth / gridWidth);
 

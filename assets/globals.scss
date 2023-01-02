@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&family=Passion+One&display=swap');
 
-* {
+*::-moz-selection {
+    /* Code for Firefox */
+
+    background: rgb(226, 222, 248);
+}
+
+*::selection {
+    background: rgb(226, 222, 248);
 }
 
 h1 {
@@ -12,26 +19,19 @@ h2 {
 }
 
 p {
-    font-family: 'Noto Sans';
+    font-family: 'Roboto';
+    line-height: 2rem;
 }
 
 body {
-    background: #f9faf5;
-}
-
-.theme-light {
-    --background: #f8f8f8;
-    --text: #313131;
-}
-.theme-dark {
-    --background: #313131;
-    --text: #f8f8f8;
+    @apply bg-lightgrey;
 }
 
 .listCategories {
-    @apply bg-white rounded-lg p-2 my-4 shadow w-full;
+    @apply bg-white rounded-lg p-4 my-4 shadow w-full;
 }
 
 .listCategories:nth-child(1) {
     margin: unset;
+    border-left: 1rem solid rgb(166, 241, 210);
 }
