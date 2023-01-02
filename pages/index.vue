@@ -32,10 +32,14 @@
                             :id="item.id"
                             class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
                         >
-                            <p class="font-light">{{ item.titel }}</p>
-                            <p>
-                                {{ item.date }}
-                            </p>
+                            <div
+                                class="flex align-center flex-row justify-between"
+                            >
+                                <p class="font-light">{{ item.titel }}</p>
+                                <p class="text-sm leading-4">
+                                    {{ item.date }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="listCategories">
