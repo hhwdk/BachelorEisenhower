@@ -25,6 +25,15 @@
             <div class="flex flex-col w-1/3 grow">
                 <div class="">
                     <div class="listCategories">
+                        <h3 class="font-bold text-xl py-3">Test</h3>
+                        <div
+                            v-for="item in points"
+                            :key="item.id"
+                            :id="item.id"
+                            class="py-2 font-thin font-sans"
+                        ></div>
+                    </div>
+                    <div class="listCategories">
                         <h3 class="font-bold text-3xl py-1 pb-4">DO IT</h3>
                         <div
                             v-for="item in points"
@@ -32,25 +41,35 @@
                             :id="item.id"
                             class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
                         >
-                            <div
-                                class="flex align-center flex-row justify-between"
+                            <template
+                                class=""
+                                v-if="item.X > 488 && item.Y < 350"
                             >
-                                <p class="font-light">{{ item.titel }}</p>
-                                <p class="text-sm leading-4">
-                                    {{ item.date }}
-                                </p>
-                            </div>
+                                <div
+                                    class="flex align-center flex-row justify-between"
+                                >
+                                    <p class="font-light">
+                                        {{ item.titel + item.X + item.Y }}
+                                        higher than 488, lower than 350.
+                                    </p>
+                                    <p class="text-sm leading-4">
+                                        {{ item.date }}
+                                    </p>
+                                </div>
+                                <div><p>No TASKS TO SHOW</p></div>
+                            </template>
                         </div>
                     </div>
                     <div class="listCategories">
                         <h3 class="font-bold text-xl py-3">SCHEDULE IT</h3>
+
                         <div
                             v-for="item in points"
                             :key="item.id"
                             :id="item.id"
                             class="py-2 font-thin font-sans"
                         >
-                            <p class="font-light">{{ item.titel }}</p>
+                            <p class="font-light">{{ item }}</p>
                         </div>
                     </div>
                     <div class="listCategories">
