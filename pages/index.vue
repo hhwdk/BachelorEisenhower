@@ -35,14 +35,13 @@
                     </div>
                     <div class="listCategories">
                         <h3 class="font-bold text-3xl py-1 pb-4">DO IT</h3>
-                        <div
+                        <template
                             v-for="item in points"
                             :key="item.id"
-                            :id="item.id"
-                            class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
                         >
-                            <template
-                                class=""
+                            <div
+                                :id="item.id"
+                                class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
                                 v-if="item.X > 488 && item.Y < 350"
                             >
                                 <div
@@ -56,32 +55,61 @@
                                         {{ item.date }}
                                     </p>
                                 </div>
-                                <div><p>No TASKS TO SHOW</p></div>
-                            </template>
-                        </div>
+                            </div>
+                        </template>
+                        <div v-if="!points.some(item => item.X > 488 && item.Y < 350)"><p>No TASKS TO SHOW</p></div>
                     </div>
                     <div class="listCategories">
-                        <h3 class="font-bold text-xl py-3">SCHEDULE IT</h3>
-
-                        <div
+                        <h3 class="font-bold text-3xl py-1 pb-4">SCHEDULE IT</h3>
+                        <template
                             v-for="item in points"
                             :key="item.id"
-                            :id="item.id"
-                            class="py-2 font-thin font-sans"
                         >
-                            <p class="font-light">{{ item }}</p>
-                        </div>
+                            <div
+                                :id="item.id"
+                                class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
+                                v-if="item.X > 488 && item.Y > 350"
+                            >
+                                <div
+                                    class="flex align-center flex-row justify-between"
+                                >
+                                    <p class="font-light">
+                                        {{ item.titel + item.X + item.Y }}
+                                        higher than 488, lower than 350.
+                                    </p>
+                                    <p class="text-sm leading-4">
+                                        {{ item.date }}
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+                        <div v-if="!points.some(item => item.X > 488 && item.Y > 350)"><p>No TASKS TO SHOW</p></div>
                     </div>
                     <div class="listCategories">
-                        <h3 class="font-bold text-xl py-3">DELEGATE IT</h3>
-                        <div
+                        <h3 class="font-bold text-3xl py-1 pb-4">SCHEDULE IT</h3>
+                        <template
                             v-for="item in points"
                             :key="item.id"
-                            :id="item.id"
-                            class="py-2 font-thin font-sans"
                         >
-                            <p class="font-light">{{ item.titel }}</p>
-                        </div>
+                            <div
+                                :id="item.id"
+                                class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
+                                v-if="item.X > 488 && item.Y > 350"
+                            >
+                                <div
+                                    class="flex align-center flex-row justify-between"
+                                >
+                                    <p class="font-light">
+                                        {{ item.titel + item.X + item.Y }}
+                                        higher than 488, lower than 350.
+                                    </p>
+                                    <p class="text-sm leading-4">
+                                        {{ item.date }}
+                                    </p>
+                                </div>
+                            </div>
+                        </template>
+                        <div v-if="!points.some(item => item.X < 488 && item.Y < 350)"><p>No TASKS TO SHOW</p></div>
                     </div>
                 </div>
             </div>
