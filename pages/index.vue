@@ -68,7 +68,7 @@
                             <div
                                 :id="item.id"
                                 class="p-2 font-thin font-sans bg-slate-100 rounded shadow-sm my-2"
-                                v-if="item.X > 488 && item.Y > 350"
+                                v-if="item.X < 488 && item.Y < 350"
                             >
                                 <div
                                     class="flex align-center flex-row justify-between"
@@ -86,7 +86,7 @@
                         <div v-if="!points.some(item => item.X > 488 && item.Y > 350)"><p>No TASKS TO SHOW</p></div>
                     </div>
                     <div class="listCategories">
-                        <h3 class="font-bold text-3xl py-1 pb-4">SCHEDULE IT</h3>
+                        <h3 class="font-bold text-3xl py-1 pb-4">DELEGATE IT</h3>
                         <template
                             v-for="item in points"
                             :key="item.id"
