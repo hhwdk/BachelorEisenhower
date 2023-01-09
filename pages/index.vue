@@ -10,9 +10,12 @@
         <section class="my-4">
             <h2>Welcome back Simon</h2>
         </section>
-
         <div class="flex justify-between">
             <div class="boundingbox" id="boundingbox">
+                <div class="flex w-full justify-between">
+                    <div>SCHEDULE IT</div>
+                    <div>DO IT</div>
+                </div>
                 <div id="box1" ref="box" @click.self="createTask">
                     <div
                         v-for="item in points"
@@ -21,18 +24,13 @@
                         class="point"
                     ></div>
                 </div>
+                <div class="flex w-full justify-between">
+                    <div>DELETE IT</div>
+                    <div>DELEGATE IT</div>
+                </div>
             </div>
             <div class="flex flex-col w-1/3 grow">
                 <div class="">
-                    <div class="listCategories">
-                        <h3 class="font-bold text-xl py-3">Test</h3>
-                        <div
-                            v-for="item in points"
-                            :key="item.id"
-                            :id="item.id"
-                            class="py-2 font-thin font-sans"
-                        ></div>
-                    </div>
                     <div class="listCategories">
                         <h3 class="font-bold text-3xl py-1 pb-4">DO IT</h3>
                         <template
@@ -47,17 +45,16 @@
                                 <div
                                     class="flex align-center flex-row justify-between"
                                 >
-                                    <p class="font-light">
-                                        {{ item.titel + item.X + item.Y }}
-                                        higher than 488, lower than 350.
+                                    <p class="font-light text-xl">
+                                        {{ item.titel }}
                                     </p>
-                                    <p class="text-sm leading-4">
-                                        {{ item.date }}
+                                    <p class="font-light">
+                                        {{ item.date.split('T')[0] }}
                                     </p>
                                 </div>
                             </div>
                         </template>
-                        <div v-if="!points.some(item => item.X > 488 && item.Y < 350)"><p>No TASKS TO SHOW</p></div>
+                        <div v-if="!points.some(item => item.X > 488 && item.Y < 350)"><p>No tasks to show.</p></div>
                     </div>
                     <div class="listCategories">
                         <h3 class="font-bold text-3xl py-1 pb-4">SCHEDULE IT</h3>
@@ -74,16 +71,15 @@
                                     class="flex align-center flex-row justify-between"
                                 >
                                     <p class="font-light">
-                                        {{ item.titel + item.X + item.Y }}
-                                        higher than 488, lower than 350.
+                                        {{ item.titel }}
                                     </p>
-                                    <p class="text-sm leading-4">
-                                        {{ item.date }}
+                                    <p class="font-light">
+                                        {{ item.date.split('T')[0] }}
                                     </p>
                                 </div>
                             </div>
                         </template>
-                        <div v-if="!points.some(item => item.X > 488 && item.Y > 350)"><p>No TASKS TO SHOW</p></div>
+                        <div v-if="!points.some(item => item.X < 488 && item.Y < 350)"><p>No tasks to show.</p></div>
                     </div>
                     <div class="listCategories">
                         <h3 class="font-bold text-3xl py-1 pb-4">DELEGATE IT</h3>
@@ -100,21 +96,20 @@
                                     class="flex align-center flex-row justify-between"
                                 >
                                     <p class="font-light">
-                                        {{ item.titel + item.X + item.Y }}
-                                        higher than 488, lower than 350.
+                                        {{ item.titel }}
                                     </p>
                                     <p class="text-sm leading-4">
-                                        {{ item.date }}
+                                        {{ item.date.split('T')[0] }}
                                     </p>
                                 </div>
                             </div>
                         </template>
-                        <div v-if="!points.some(item => item.X < 488 && item.Y < 350)"><p>No TASKS TO SHOW</p></div>
+                        <div v-if="!points.some(item => item.X > 488 && item.Y > 350)"><p>No tasks to show.</p></div>
                     </div>
                 </div>
             </div>
         </div>
-        <label id="lbl1"></label>
+        <label id="lbl1" class="hidden"></label>
     </main>
 </template>
 
@@ -163,7 +158,7 @@
 }
 
 .boundingbox {
-    width: 1000px;
+    padding-right:40px;
     height: 700px;
     @apply relative;
 }
@@ -283,6 +278,12 @@ h4 {
       duration-150
       ease-in-out;
 }
+.listCategories:nth-child(2) {
+    border-left: 1rem solid lightblue;
+}
+.listCategories:nth-child(3) {
+    border-left: 1rem solid #CBC3E3;
+}
 </style>
 
 <script setup>
@@ -295,6 +296,14 @@ const box = ref(null);
 const { data: points } = await useFetch('http://localhost:5000/', {
     method: 'get',
 });
+console.log(points.value);
+points.value.sort((a, b) => {
+  if (a.Y > b.Y) return 1;
+  if (a.Y < b.Y) return -1;
+  return 0;
+});
+ console.log(points.value);
+
 
 const deletePosition = async ({ id }) => {
     await useFetch('http://localhost:5000/:id', {
